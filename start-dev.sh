@@ -10,7 +10,7 @@ cleanup() {
 trap cleanup EXIT
 
 # Start Laravel server in the background
-php artisan serve &
+php artisan serve --port=8080 &
 
 # Start Vite development server
 npm run dev
