@@ -1,10 +1,11 @@
 import { Button } from "@headlessui/react";
 import { IconBell, IconMenu3, IconSearch } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
-export default function Navbar({toggleSidebar}) {
+export default function Navbar({toggleSidebar, isMobile}) {
     
     return (
-        <nav className="bg-base-100 shadow-md">
+        <nav className={`bg-base-100 shadow-md ${isMobile ? 'fixed top-0 left-0 w-full z-0' : ''}`}>
             <div className="container mx-auto px-4 py-2 flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                     <Button className="btn btn-ghost btn-square" onClick={toggleSidebar}>

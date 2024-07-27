@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from "@inertiajs/react";
-import { IconHome, IconChevronDown, IconMenu4, IconCategory } from "@tabler/icons-react";
+import { IconHome, IconChevronDown, IconMenu4, IconCategory, IconMenu2 } from "@tabler/icons-react";
 import { Transition } from '@headlessui/react';
 
 const menuItems = [
@@ -23,7 +23,7 @@ const menuItems = [
     }
 ];
 
-export default function Sidebar({sidebarOpen = false}) {
+export default function Sidebar({sidebarOpen = false, isMobile = false}) {
     const [openSubmenus, setOpenSubmenus] = useState({});
     const [sidebarOpenTemp, setSidebarOpenTemp] = useState(false);
 
@@ -43,7 +43,10 @@ export default function Sidebar({sidebarOpen = false}) {
     };
 
     return (
-        <aside className={'bg-base-200 dark:bg-gray-800 p-4 h-screen duration-300 ease-in-out ' + (( sidebarOpen || sidebarOpenTemp ) ? 'w-64' : 'w-24')}
+        <aside className={ `top-0 left-0 sm:fixed md:relative sm:z-40 md:z-0 
+            ${( sidebarOpen || sidebarOpenTemp ) ? 'block' : 'hidden'} 
+            ${( sidebarOpen || sidebarOpenTemp ) ? 'w-56 z-50' : 'w-24'} 
+            md:block overflow-y-auto transition-all bg-base-200 dark:bg-gray-800 p-4 h-screen duration-300 ease-in-out`}
             {...(!sidebarOpen && { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave })}
             >
             <>
