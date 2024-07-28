@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 export default function Dashboard({ auth }) {
     return (
         <AppLayout>
-            
+            <Head title="Dashboard" />
         </AppLayout>
     );
 }

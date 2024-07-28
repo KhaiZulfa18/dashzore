@@ -4,26 +4,6 @@ import { Link, usePage } from "@inertiajs/react";
 import { IconHome, IconCategory } from "@tabler/icons-react";
 import { Transition } from '@headlessui/react';
 
-const menuItems = [
-    { name: 'Item 1', link: '#' },
-    { 
-        name: 'Parent 1', 
-        icon: <IconHome size={20} />, 
-        children: [
-            { name: 'Submenu 1', link: '#' },
-            { name: 'Submenu 2', link: '#' }
-        ] 
-    },
-    { name: 'Item 2', link: '#' },
-    { 
-        name: 'Parent 2', 
-        children: [
-            { name: 'Submenu 1', link: '#' },
-            { name: 'Submenu 2', link: '#' }
-        ] 
-    }
-];
-
 export default function Sidebar({sidebarOpen = false, isMobile = false}) {
 
     // define props
@@ -68,7 +48,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                         {menu.details.map((item, index) => (
                             <li key={index}>
                                 {!item.subdetails ? (
-                                    <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.link}>
+                                    <Link className={'menu-item duration-700 ease-in-out text-nowrap ' + (item.active ? 'active' : '')} href={item.link}>
                                         {item.icon ? item.icon : <IconCategory size={20} />} 
                                         { (sidebarOpen || sidebarOpenTemp ) && item.title }
                                     </Link>
