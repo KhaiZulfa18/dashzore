@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Link } from "@inertiajs/react";
-import { IconHome, IconChevronDown, IconMenu4, IconCategory, IconMenu2 } from "@tabler/icons-react";
+import React, { useState } from 'react';
+import Menu from "@/Utils/Menu"
+import { Link, usePage } from "@inertiajs/react";
+import { IconHome, IconCategory } from "@tabler/icons-react";
 import { Transition } from '@headlessui/react';
 
 const menuItems = [
@@ -24,6 +25,13 @@ const menuItems = [
 ];
 
 export default function Sidebar({sidebarOpen = false, isMobile = false}) {
+
+    // define props
+    const { auth } = usePage().props;
+
+    // get menu from utils
+    const menuNavigation = Menu();
+
     const [openSubmenus, setOpenSubmenus] = useState({});
     const [sidebarOpenTemp, setSidebarOpenTemp] = useState(false);
 
@@ -50,54 +58,57 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
             {...(!sidebarOpen && { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave })}
             >
             <>
-                <div className="text-xl text-center font-bold mb-4 bg-base-100 rounded-xl py-3 px-2">
-                    { (sidebarOpen || sidebarOpenTemp ) ?  'Dashzore' : 'D'}
+                <div className="text-xl text-center font-bold mb-4 bg-base-100 rounded-xl py-3 px-2 tracking-widest">
+                    { (sidebarOpen || sidebarOpenTemp ) ?  'Dashzore' : 'Dz'}
                 </div>
                 <ul className="menu menu-md rounded-box duration-300 ease-out">
-                    {menuItems.map((item, index) => (
-                        <>
-                        { (sidebarOpen || sidebarOpenTemp ) && <li class="menu-title">Title</li> }
-                        <li key={index}>
-                            {!item.children ? (
-                                <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.link}>
-                                    {item.icon ? item.icon : <IconCategory size={20} />} 
-                                    { (sidebarOpen || sidebarOpenTemp ) && item.name }
-                                </Link>
-                            ) : (
-                                (sidebarOpen || sidebarOpenTemp ) ? (
-                                    <>
-                                        <span className={`menu-dropdown-toggle duration-700 ease-in-out text-nowrap ${openSubmenus[index] ? 'menu-dropdown-show' : ''}`} onClick={() => toggleSubmenu(index)}>
-                                            {item.icon ? item.icon : <IconCategory size={20} />} 
-                                            { (sidebarOpen || sidebarOpenTemp ) && item.name }
-                                        </span>
-                                        <Transition
-                                            show={openSubmenus[index] ?? false}
-                                            enter="transition ease-out duration-100"
-                                            enterFrom="transform opacity-0 scale-95"
-                                            enterTo="transform opacity-100 scale-100"
-                                            leave="transition ease-in duration-75"
-                                            leaveFrom="transform opacity-100 scale-100"
-                                            leaveTo="transform opacity-0 scale-95"
-                                        >
-                                            <ul className={`menu-dropdown duration-300 ease-in-out ${openSubmenus[index] ? 'menu-dropdown-show' : ''} `}>
-                                                {item.children.map((child, childIndex) => (
-                                                    <li key={childIndex} className="py-1">
-                                                        <Link className="menu-item" href={child.link}>
-                                                            {child.name}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </Transition>
-                                    </>
-                                ) : (
+                    {menuNavigation.map((menu, index) => (
+                        <React.Fragment key={index}>
+                        { (sidebarOpen || sidebarOpenTemp ) && <li className="menu-title text-nowrap">{menu.title}</li> }
+                        {menu.details.map((item, index) => (
+                            <li key={index}>
+                                {!item.subdetails ? (
                                     <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.link}>
                                         {item.icon ? item.icon : <IconCategory size={20} />} 
+                                        { (sidebarOpen || sidebarOpenTemp ) && item.title }
                                     </Link>
-                                )
-                            )}
-                        </li>
-                        </>
+                                ) : (
+                                    (sidebarOpen || sidebarOpenTemp ) ? (
+                                        <>
+                                            <span className={`menu-dropdown-toggle duration-700 ease-in-out text-nowrap ${openSubmenus[index] ? 'menu-dropdown-show' : ''}`} onClick={() => toggleSubmenu(index)}>
+                                                {item.icon ? item.icon : <IconCategory size={20} />} 
+                                                { (sidebarOpen || sidebarOpenTemp ) && item.title }
+                                            </span>
+                                            <Transition
+                                                show={openSubmenus[index] ?? false}
+                                                enter="transition ease-out duration-100"
+                                                enterFrom="transform opacity-0 scale-95"
+                                                enterTo="transform opacity-100 scale-100"
+                                                leave="transition ease-in duration-75"
+                                                leaveFrom="transform opacity-100 scale-100"
+                                                leaveTo="transform opacity-0 scale-95"
+                                            >
+                                                <ul className={`menu-dropdown duration-300 ease-in-out ${openSubmenus[index] ? 'menu-dropdown-show' : ''} `}>
+                                                    {item.subdetails.map((child, childIndex) => (
+                                                        <li key={childIndex} className="py-1">
+                                                            <Link className="menu-item" href={child.link}>
+                                                                {child.icon && child.icon } 
+                                                                { (sidebarOpen || sidebarOpenTemp ) && child.title }
+                                                            </Link>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </Transition>
+                                        </>
+                                    ) : (
+                                        <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.link}>
+                                            {item.icon ? item.icon : <IconCategory size={20} />} 
+                                        </Link>
+                                    )
+                                )}
+                            </li>
+                            ))}
+                        </React.Fragment>
                     ))}
                 </ul>
             </>

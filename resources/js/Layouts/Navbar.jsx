@@ -32,7 +32,7 @@ export default function Navbar({toggleSidebar, isMobile}) {
                             tabIndex="0"
                             className="menu menu-sm dropdown-content bg-gray-50  rounded-box z-[1] mt-3 w-52 p-2 shadow">
                             <li>
-                                <a className="justify-between">
+                                <a className="justify-between focus:bg-gray-300 active:bg-gray-300">
                                     Profile
                                     <span className="badge">New</span>
                                 </a>
