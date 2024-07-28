@@ -43,18 +43,20 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
     };
 
     return (
-        <aside className={ `top-0 left-0 sm:fixed md:relative sm:z-40 md:z-0 
-            ${( sidebarOpen || sidebarOpenTemp ) ? 'block' : 'hidden'} 
-            ${( sidebarOpen || sidebarOpenTemp ) ? 'w-56 z-50' : 'w-24'} 
-            md:block overflow-y-auto transition-all bg-base-200 dark:bg-gray-800 p-4 h-screen duration-300 ease-in-out`}
+        <aside className={ `top-0 left-0 sm:fixed md:relative sm:z-40 md:z-0 rounded-br-xl
+            ${( sidebarOpen || sidebarOpenTemp ) ? 'w-56 z-50' : 'w-24'}
+            ${isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'}
+            md:block overflow-y-auto transition-all bg-base-300 shadow p-4 h-screen duration-300 ease-in-out`}
             {...(!sidebarOpen && { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave })}
             >
             <>
-                <div className="text-2xl text-center font-bold mb-4">
+                <div className="text-xl text-center font-bold mb-4 bg-base-100 rounded-xl py-3 px-2">
                     { (sidebarOpen || sidebarOpenTemp ) ?  'Dashzore' : 'D'}
                 </div>
                 <ul className="menu menu-md rounded-box duration-300 ease-out">
                     {menuItems.map((item, index) => (
+                        <>
+                        { (sidebarOpen || sidebarOpenTemp ) && <li class="menu-title">Title</li> }
                         <li key={index}>
                             {!item.children ? (
                                 <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.link}>
@@ -95,6 +97,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                                 )
                             )}
                         </li>
+                        </>
                     ))}
                 </ul>
             </>

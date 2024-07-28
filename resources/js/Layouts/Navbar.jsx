@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 export default function Navbar({toggleSidebar, isMobile}) {
     
     return (
-        <nav className={`bg-base-100 shadow-md ${isMobile ? 'fixed top-0 left-0 w-full z-0' : ''}`}>
+        <nav className={`bg-gray-50 text-gray-800 shadow-md rounded-b-lg md:rounded-b-xl ${isMobile ? 'fixed top-0 left-0 w-full z-0' : ''}`}>
             <div className="container mx-auto px-4 py-2 flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                     <Button className="btn btn-ghost btn-square" onClick={toggleSidebar}>
@@ -13,15 +13,15 @@ export default function Navbar({toggleSidebar, isMobile}) {
                     </Button>
                 </div>
                 <div className="flex items-center space-x-3 pr-3">
-                    <button className="btn btn-ghost btn-circle">
+                    <Button className="btn btn-ghost btn-circle">
                         <IconSearch size={20}/>
-                    </button>
-                    <button className="btn btn-ghost btn-circle relative">
+                    </Button>
+                    <Button className="btn btn-ghost btn-circle relative">
                         <IconBell size={20}/>
                         <span className="badge badge-xs badge-primary absolute top-0 right-0"></span>
-                    </button>
+                    </Button>
                     <div className="dropdown dropdown-end">
-                        <div tabIndex="0" role="button" className="btn btn-ghost btn-circle avatar">
+                        <div tabIndex="0" role="Button" className="btn btn-ghost btn-circle avatar">
                             <div className="w-10 rounded-full">
                             <img
                                 alt="Tailwind CSS Navbar component"
@@ -30,7 +30,7 @@ export default function Navbar({toggleSidebar, isMobile}) {
                         </div>
                         <ul
                             tabIndex="0"
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                            className="menu menu-sm dropdown-content bg-gray-50  rounded-box z-[1] mt-3 w-52 p-2 shadow">
                             <li>
                                 <a className="justify-between">
                                     Profile

@@ -42,7 +42,7 @@ export default function AppLayout({ children }) {
 
 
     return (
-        <div className='min-h-screen flex overflow-y-auto'>
+        <div className='min-h-screen flex overflow-y-auto bg-gray-300'>
             <Head title="Welcome" />
             <Sidebar sidebarOpen={sidebarOpen} isMobile={isMobile}/>
             {sidebarOpen && isMobile && (
