@@ -31,10 +31,10 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
     };
 
     return (
-        <aside className={ `top-0 left-0 sm:fixed md:relative sm:z-40 md:z-0 rounded-br-xl
-            ${( sidebarOpen || sidebarOpenTemp ) ? 'w-56 z-50' : 'w-24'}
-            ${isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full') : 'translate-x-0'}
-            md:block overflow-y-auto transition-all bg-base-300 shadow p-4 h-screen duration-300 ease-in-out`}
+        <aside className={ `top-0 left-0 sm:fixed md:relative sm:z-40 md:z-0 rounded-br-xl p-4
+            ${( sidebarOpen || sidebarOpenTemp ) ? 'w-56 z-50' : 'w-24 z-60'}
+            ${isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full w-0 p-0') : 'translate-x-0 '}
+            md:block overflow-y-auto transition-all bg-base-300 shadow h-screen duration-300 ease-in-out`}
             {...(!sidebarOpen && { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave })}
             >
             <>
@@ -48,7 +48,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                         {menu.details.map((item, index) => (
                             <li key={index}>
                                 {!item.subdetails ? (
-                                    <Link className={'menu-item duration-700 ease-in-out text-nowrap ' + (item.active ? 'active' : '')} href={item.link}>
+                                    <Link className={'menu-item duration-700 ease-in-out text-nowrap ' + (item.active ? 'active' : '')} href={item.href}>
                                         {item.icon ? item.icon : <IconCategory size={20} />} 
                                         { (sidebarOpen || sidebarOpenTemp ) && item.title }
                                     </Link>
@@ -71,7 +71,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                                                 <ul className={`menu-dropdown duration-300 ease-in-out ${openSubmenus[index] ? 'menu-dropdown-show' : ''} `}>
                                                     {item.subdetails.map((child, childIndex) => (
                                                         <li key={childIndex} className="py-1">
-                                                            <Link className="menu-item" href={child.link}>
+                                                            <Link className="menu-item" href={child.href}>
                                                                 {child.icon && child.icon } 
                                                                 { (sidebarOpen || sidebarOpenTemp ) && child.title }
                                                             </Link>
@@ -81,7 +81,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                                             </Transition>
                                         </>
                                     ) : (
-                                        <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.link}>
+                                        <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.href}>
                                             {item.icon ? item.icon : <IconCategory size={20} />} 
                                         </Link>
                                     )

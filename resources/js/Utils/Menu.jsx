@@ -28,7 +28,7 @@ export default function Menu() {
                 {
                     title : 'User',
                     href : '/user',
-                    active: url.startsWith('/permission') ? true : false,
+                    active: url.startsWith('/user') ? true : false,
                     icon : <IconUsersGroup size={20}/>,
                     // permissions: hasAnyPermission(['permission-view']),
                 },

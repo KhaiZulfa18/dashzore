@@ -5,14 +5,15 @@ import { useEffect, useState } from "react";
 export default function Navbar({toggleSidebar, isMobile}) {
     
     return (
+        <>
         <nav className={`bg-gray-50 text-gray-800 shadow-md rounded-b-lg md:rounded-b-xl ${isMobile ? 'fixed top-0 left-0 w-full z-0' : ''}`}>
-            <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+            <div className="navbar mx-auto px-4 py-2 flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                     <Button className="btn btn-ghost btn-square" onClick={toggleSidebar}>
                         <IconMenu3 size={20}/>
                     </Button>
                 </div>
-                <div className="flex items-center space-x-3 pr-3">
+                <div className="flex items-center space-x-2">
                     <Button className="btn btn-ghost btn-circle">
                         <IconSearch size={20}/>
                     </Button>
@@ -44,5 +45,6 @@ export default function Navbar({toggleSidebar, isMobile}) {
                 </div>
             </div>
         </nav>
+        </>
     );
 }
