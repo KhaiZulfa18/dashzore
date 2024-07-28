@@ -45,7 +45,7 @@ export default function AppLayout({ children }) {
         <div className='min-h-screen flex overflow-y-auto bg-gray-300'>
             <Head title="Welcome" />
             <Sidebar sidebarOpen={sidebarOpen} isMobile={isMobile}/>
-            {sidebarOpen && isMobile && (
+            { ( sidebarOpen && isMobile ) && (
                 <div
                     className="fixed inset-0 bg-base-100 bg-opacity-50 z-40 transition-all duration-200"
                     onClick={() => setSidebarOpen(false)}

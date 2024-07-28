@@ -30,11 +30,12 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
         setSidebarOpenTemp(false);
     };
 
+    const sideBarClass = `relative rounded-br-xl p-4 bg-base-300 md:block overflow-y-auto shadow h-screen transition-all duration-300 ease-in-out ${(sidebarOpen || sidebarOpenTemp) ? 'w-56' : 'w-24'}`;
+    const sideBarMobileClass = `fixed top-0 left-0 z-50 w-56 h-full rounded-br-xl p-3 bg-base-300 overflow-y-auto shadow h-screen transition-all duration-300 ease-in-out ${(sidebarOpen) ?'translate-x-0 opacity-100' : '-translate-x-full'} `;
+
     return (
-        <aside className={ `top-0 left-0 sm:fixed md:relative sm:z-40 md:z-0 rounded-br-xl p-4
-            ${( sidebarOpen || sidebarOpenTemp ) ? 'w-56 z-50' : 'w-24 z-60'}
-            ${isMobile ? (sidebarOpen ? 'translate-x-0' : '-translate-x-full w-0 p-0') : 'translate-x-0 '}
-            md:block overflow-y-auto transition-all bg-base-300 shadow h-screen duration-300 ease-in-out`}
+        <aside 
+            className={(isMobile ? sideBarMobileClass : sideBarClass)}
             {...(!sidebarOpen && { onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave })}
             >
             <>
