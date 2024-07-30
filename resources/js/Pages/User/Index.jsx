@@ -1,14 +1,68 @@
 import Card from '@/Components/Card';
+import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import Table from '@/Components/Table';
 import TextInput from '@/Components/TextInput';
 import AppLayout from '@/Layouts/AppLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@headlessui/react';
-import { Head } from '@inertiajs/react';
-import { IconPencil, IconTrash } from '@tabler/icons-react';
+import { Head, useForm } from '@inertiajs/react';
+import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 
 export default function index({auth, users}) {
+
+    const { data, setData, transform, post, errors} = useForm({
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        selectedRoles: [],
+        isUpdate: false,
+        isOpen: false,
+    });
+
+    transform((data) => ({
+        ...data,
+        // selectedPermission: data.selectedPermission.map(permission => permission.id),
+        _method : data.isUpdate === true ? 'put' : 'post'
+    }))
+
+    const saveUser = async (e) => {
+        e.preventDefault();
+
+        post(route('user.store'), {
+            onSuccess: () => {
+                setData({
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    selectedRoles: [],
+                    isUpdate: false,
+                    isOpen: false,
+                })
+            }
+        });
+    }
+
+    const updateUser = async (e) => {
+        e.preventDefault();
+
+        post(route('user.update', data.id), {
+            onSuccess : () => {
+                setData({
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    selectedRoles: [],
+                    isUpdate: false,
+                    isOpen: false,
+                });
+            }
+        })
+    }
+    
     return (
         <AppLayout>
             <Head title="User" />
@@ -20,9 +74,9 @@ export default function index({auth, users}) {
                 <Card.Body>
                     <div className="flex justify-between mb-2">
                         <div className='card-actions'>
-                            <Button className={'btn btn-sm btn-primary text-white'}>Add User</Button>
+                            <Button className={'btn btn-sm btn-primary text-white'} onClick={() => setData('isOpen', true)}><IconPlus size={14}/> New User</Button>
                         </div>
-                        <TextInput className={`py-1 rounded-2xl focus:border-violet-400 focus:ring-violet-50`} placeholder="Search..." />
+                        <TextInput className={`py-1 rounded-2xl`} placeholder="Search..." />
                     </div>
                     <Table>
                         <Table.Header className='bg-slate-200'>
@@ -36,18 +90,29 @@ export default function index({auth, users}) {
                         </Table.Header>
                         <Table.Body>
                             {users.data.map((user, index) => (
-                                <Table.Row>
+                                <Table.Row key={index}>
                                     <Table.Cell>{index + 1}</Table.Cell> 
                                     <Table.Cell>{user.name}</Table.Cell> 
                                     <Table.Cell>{user.email}</Table.Cell> 
                                     <Table.Cell>
                                         {user.roles.map((role) => (
-                                            <span className='badge badge-primary'>{role.name}</span>
+                                            <span className='badge badge-outline badge-primary'>{role.name}</span>
                                         ))}
                                     </Table.Cell> 
                                     <Table.Cell className='text-center'>
                                         <div className='flex gap-2 justify-end'>
-                                            <Button className={'btn btn-sm btn-accent'}>
+                                            <Button className={'btn btn-sm btn-accent'} 
+                                                onClick={() =>
+                                                    setData({
+                                                        id: user.id,
+                                                        selectedRoles: user.roles,
+                                                        name: user.name,
+                                                        email: user.email,
+                                                        password: '',
+                                                        isUpdate: true,
+                                                        isOpen : !data.isOpen,
+                                                    })
+                                                } >
                                                 <IconPencil color='white' size={20}/>
                                             </Button>
                                             <Button className={'btn btn-sm btn-error'}>
@@ -63,43 +128,38 @@ export default function index({auth, users}) {
                 </Card.Body>
             </Card>
 
-                {/* <div class="card bg-base-100 shadow-xl text-white">
-                    <div class="card-body">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="card-title text-2xl font-bold">Last tasks</h2>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">
-                                <span>117 total, proceed to resolve them</span>
-                            </div>
-                        </div>
-                    
-                        <div class="overflow-x-auto">
-                            <table class="table w-full">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Admin</th>
-                                    <th>Members</th>
-                                    <th>Status</th>
-                                    <th>Run time</th>
-                                    <th>Finish date</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>ClientOnboarding - Circle</td>
-                                    <td>Samantha J.</td>
-                                    <td>3</td>
-                                    <td>
-                                    <span class="badge badge-primary">In progress</span>
-                                    </td>
-                                    <td>6 hours</td>
-                                    <td>6 Mon</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            <Modal show={data.isOpen} 
+                onClose={() => setData({
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    selectedRoles: [],
+                    isUpdate: false,
+                    isOpen: false,
+                })}
+                verticalAlign={'top'}
+                title={`${data.isUpdate ? 'Update User' : 'Add New User'}`}>
+                <form onSubmit={data.isUpdate === true ? updateUser : saveUser}>
+                    <div className='mb-4'>
+                        <label className='text-gray-700 text-sm'>Name</label>
+                        <TextInput placeholder='Name' className="w-full" value={data.name} onChange={e => setData('name', e.target.value)} errors={errors.name} autoComplete={false} />
                     </div>
-                </div> */}
+                    <div className='mb-4'>
+                        <label className='text-gray-700 text-sm'>Email</label>
+                        <TextInput type={'email'} placeholder='Email' className="w-full" value={data.email} onChange={e => setData('email', e.target.value)} errors={errors.email} autoComplete={false} />
+                    </div>
+                    <div className='mb-4'>
+                        <label className='text-gray-700 text-sm'>Password</label>
+                        <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete={false} />
+                    </div>
+                    <Button
+                        type={'submit'}
+                        className={'btn btn-sm btn-primary text-white'}>
+                            Simpan
+                    </Button>
+                </form>
+            </Modal>
         </AppLayout>
     );
 }

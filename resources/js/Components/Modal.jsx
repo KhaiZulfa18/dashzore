@@ -1,6 +1,8 @@
-import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { IconX } from '@tabler/icons-react';
 
-export default function Modal({ children, show = false, maxWidth = '2xl', closeable = true, onClose = () => {} }) {
+export default function Modal({ children, title, show = false, maxWidth = '2xl', verticalAlign = 'center', closeable = true, onClose = () => {} }) {
     const close = () => {
         if (closeable) {
             onClose();
@@ -15,26 +17,30 @@ export default function Modal({ children, show = false, maxWidth = '2xl', closea
         '2xl': 'sm:max-w-2xl',
     }[maxWidth];
 
+    const verticalAlignClass = verticalAlign === 'center' ? 'items-center' : 'items-start';
+
     return (
-        <Transition show={show} leave="duration-200">
+        <Transition show={show} as={Fragment} leave="duration-200">
             <Dialog
                 as="div"
                 id="modal"
-                className="fixed inset-0 flex overflow-y-auto px-4 py-6 sm:px-0 items-center z-50 transform transition-all"
+                className={`fixed inset-0 flex overflow-y-auto px-4 py-6 sm:px-0 ${verticalAlignClass} z-50 transform transition-all`}
                 onClose={close}
             >
-                <TransitionChild
+                <Transition.Child
+                    as={Fragment}
                     enter="ease-out duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="ease-in duration-200"
+                    leave="ease-in duration-75"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
                     <div className="absolute inset-0 bg-gray-500/75" />
-                </TransitionChild>
+                </Transition.Child>
 
-                <TransitionChild
+                <Transition.Child
+                    as={Fragment}
                     enter="ease-out duration-300"
                     enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -42,12 +48,18 @@ export default function Modal({ children, show = false, maxWidth = '2xl', closea
                     leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                    <DialogPanel
-                        className={`mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass}`}
+                    <Dialog.Panel
+                        className={`mb-6 bg-white dark:bg-gray-950 rounded-lg overflow-hidden shadow-xl py-3 transform transition-all w-full sm:mx-auto ${maxWidthClass}`}
                     >
-                        {children}
-                    </DialogPanel>
-                </TransitionChild>
+                        <Dialog.Title className={'border-b px-4 py-2 font-semibold text-base flex items-center justify-between gap-2 text-gray-700 dark:border-gray-900 dark:text-gray-300'}>
+                            {title}
+                            {closeable && <button type="button" onClick={close}><IconX size={20} /></button>}
+                        </Dialog.Title>
+                        <div className='px-4 py-5'>
+                            {children}
+                        </div>
+                    </Dialog.Panel>
+                </Transition.Child>
             </Dialog>
         </Transition>
     );

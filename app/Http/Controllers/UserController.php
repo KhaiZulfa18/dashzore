@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -27,7 +28,7 @@ class UserController extends Controller
 
         $users = $query->with('roles')
                     ->orderBy($sortFields, $sortDirection)
-                    ->paginate(2)
+                    ->paginate(10)
                     ->onEachSide(1);
 
         return Inertia::render('User/Index', [
@@ -47,9 +48,17 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        // $user->assignRole($request->selectedRoles);
+
+        return back();
     }
 
     /**
@@ -71,9 +80,22 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UserRequest $request, User $user)
     {
         //
+        if($request->password)
+
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+
+        $user->update([
+            'name' => $request->name,
+        ]);
+
+        // $user->syncRoles($request->selectedRoles);
+
+        return back();
     }
 
     /**
