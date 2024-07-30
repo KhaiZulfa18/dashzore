@@ -1,9 +1,12 @@
 import { Button } from "@headlessui/react";
+import { Link, usePage } from "@inertiajs/react";
 import { IconBell, IconMenu3, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 export default function Navbar({toggleSidebar, isMobile}) {
     
+    const { auth } = usePage().props;
+
     return (
         <>
         <nav className={`bg-gray-50 text-gray-800 shadow-md rounded-b-lg md:rounded-b-xl ${isMobile ? 'top-0 left-0 w-full z-0' : ''}`}>
@@ -31,15 +34,16 @@ export default function Navbar({toggleSidebar, isMobile}) {
                         </div>
                         <ul
                             tabIndex="0"
-                            className="menu menu-sm dropdown-content bg-gray-50  rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                            <li>
-                                <a className="justify-between focus:bg-gray-300 active:bg-gray-300">
-                                    Profile
-                                    <span className="badge">New</span>
-                                </a>
+                            className="menu menu-sm dropdown-content bg-gray-50 rounded-box z-[1] mt-3 w-auto min-w-52 p-2 shadow">
+                            <li className="border border-violet-500 bg-violet-500/10 rounded-xl active:bg-violet-700 selection:bg-violet-400 ">
+                                <span className="text-md tracking-widest font-semibold uppercase">{auth.user.name}</span>
                             </li>
-                            <li><a>Settings</a></li>
-                            <li><a>Logout</a></li>
+                            <li>
+                                <Link href={route('profile.edit')} className="hover:text-violet-600">My Profile</Link>
+                            </li>
+                            <li>
+                                <Link href={route('logout')} method="post" as="button" className="hover:text-red-600">Logout</Link>
+                            </li>
                         </ul>
                     </div>
                 </div>

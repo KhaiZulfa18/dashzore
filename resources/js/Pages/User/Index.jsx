@@ -81,11 +81,11 @@ export default function index({auth, users}) {
                     <Table>
                         <Table.Header className='bg-slate-200'>
                             <tr className='border-slate-400 '>
-                                <th>No</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Action</th>
+                                <th className='w-1/12'>No</th>
+                                <th className='w-3/12'>Name</th>
+                                <th className='w-3/12'>Email</th>
+                                <th className='w-3/12'>Role</th>
+                                <th className='w-3/12'>Action</th>
                             </tr>
                         </Table.Header>
                         <Table.Body>
