@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Inertia\Inertia;
@@ -26,11 +27,11 @@ class UserController extends Controller
 
         $users = $query->with('roles')
                     ->orderBy($sortFields, $sortDirection)
-                    ->paginate(10)
+                    ->paginate(2)
                     ->onEachSide(1);
 
         return Inertia::render('User/Index', [
-            // 'users' => UserResource::collection($users),
+            'users' => UserResource::collection($users),
             // 'queryParams' => request()->query() ?: null,
         ]);
     }
