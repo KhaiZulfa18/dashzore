@@ -6,8 +6,9 @@ import TextInput from '@/Components/TextInput';
 import AppLayout from '@/Layouts/AppLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@headlessui/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { useEffect } from 'react';
 
 export default function index({auth, users}) {
 
@@ -96,7 +97,7 @@ export default function index({auth, users}) {
                                     <Table.Cell>{user.email}</Table.Cell> 
                                     <Table.Cell>
                                         {user.roles.map((role) => (
-                                            <span className='badge badge-outline badge-primary'>{role.name}</span>
+                                            <span key={role.id} className='badge badge-outline badge-primary'>{role.name}</span>
                                         ))}
                                     </Table.Cell> 
                                     <Table.Cell className='text-center'>
@@ -143,15 +144,15 @@ export default function index({auth, users}) {
                 <form onSubmit={data.isUpdate === true ? updateUser : saveUser}>
                     <div className='mb-4'>
                         <label className='text-gray-700 text-sm'>Name</label>
-                        <TextInput placeholder='Name' className="w-full" value={data.name} onChange={e => setData('name', e.target.value)} errors={errors.name} autoComplete={false} />
+                        <TextInput placeholder='Name' className="w-full" value={data.name} onChange={e => setData('name', e.target.value)} errors={errors.name} autoComplete="off" />
                     </div>
                     <div className='mb-4'>
                         <label className='text-gray-700 text-sm'>Email</label>
-                        <TextInput type={'email'} placeholder='Email' className="w-full" value={data.email} onChange={e => setData('email', e.target.value)} errors={errors.email} autoComplete={false} />
+                        <TextInput type={'email'} placeholder='Email' className="w-full" value={data.email} onChange={e => setData('email', e.target.value)} errors={errors.email} autoComplete="off" />
                     </div>
                     <div className='mb-4'>
                         <label className='text-gray-700 text-sm'>Password</label>
-                        <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete={false} />
+                        <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete="off" />
                     </div>
                     <Button
                         type={'submit'}

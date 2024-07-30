@@ -58,7 +58,7 @@ class UserController extends Controller
 
         // $user->assignRole($request->selectedRoles);
 
-        return back();
+        return back()->with('success', 'User created successfully');
     }
 
     /**
@@ -95,7 +95,7 @@ class UserController extends Controller
 
         // $user->syncRoles($request->selectedRoles);
 
-        return back();
+        return back()->with('success', 'User updated successfully');
     }
 
     /**
