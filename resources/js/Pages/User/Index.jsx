@@ -1,4 +1,5 @@
 import Card from '@/Components/Card';
+import ListBox from '@/Components/ListBox';
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import Table from '@/Components/Table';
@@ -7,11 +8,66 @@ import useSweetAlert from '@/Hooks/useSwal';
 import AppLayout from '@/Layouts/AppLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@headlessui/react';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function index({auth, users, roles}) {
+
+    const { queryParams } = usePage().props;
+    const [search, setSearch] = useState('');
+
+    const handleSearch = (e) => {
+        const value = (e.target.value);
+
+        const updatedQueryParams = { ...queryParams };
+
+        if (search) {
+            updatedQueryParams.search = search;
+        } else {
+            delete updatedQueryParams.search;
+        }
+
+        router.get(route('user.index'), updatedQueryParams, {
+            replace: true,
+            preserveState: true,
+        });        
+    }
+
+    const debounce = (funct) => {
+        let timer;
+        return (...args) => {
+            const context = this;
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                timer = null;
+                funct.apply(context, args);
+            }, 500);
+        }
+    }
+
+    const handleSearchDebounce  = (e) => useCallback(debounce(handleSearch(e)),[]);
+
+    // const searchData = useCallback(() => {
+    //     const updatedQueryParams = { ...queryParams };
+
+    //     if (search) {
+    //         updatedQueryParams.search = search;
+    //     } else {
+    //         delete updatedQueryParams.search;
+    //     }
+
+    //     router.get(route('user.index'), updatedQueryParams, {
+    //         replace: true,
+    //         preserveState: true,
+    //     });
+    // }, [search, queryParams]);
+
+    // useEffect(() => {
+    //     const timerId = setTimeout(() => searchData(), 500); // Delay 500 ms
+
+    //     return () => clearTimeout(timerId);
+    // }, [search, searchData]);
 
     const { data, setData, transform, post, errors} = useForm({
         id: '',
@@ -23,13 +79,17 @@ export default function index({auth, users, roles}) {
         isOpen: false,
     });
 
+    const setSelectedRoles = (value) => {
+        setData('selectedRoles', value)
+    }
+
     const { delete: destroy } = useForm();
 
     const { showAlert } = useSweetAlert();
 
     transform((data) => ({
         ...data,
-        // selectedPermission: data.selectedPermission.map(permission => permission.id),
+        selectedRoles: data.selectedRoles.map(role => role.id),
         _method : data.isUpdate === true ? 'put' : 'post'
     }))
 
@@ -93,7 +153,7 @@ export default function index({auth, users, roles}) {
         } catch (error) {
           console.error('Error showing alert:', error);
         }
-      };
+    };
     
     return (
         <AppLayout>
@@ -108,7 +168,7 @@ export default function index({auth, users, roles}) {
                         <div className='card-actions'>
                             <Button className={'btn btn-sm btn-primary text-white'} onClick={() => setData('isOpen', true)}><IconPlus size={14}/> New User</Button>
                         </div>
-                        <TextInput className={`py-1 rounded-2xl`} placeholder="Search..." />
+                        <TextInput className={`py-1 rounded-2xl`} placeholder="Search..." onChange={(e) => handleSearchDebounce(e)} />
                     </div>
                     <Table>
                         <Table.Header className='bg-slate-200'>
@@ -186,8 +246,12 @@ export default function index({auth, users, roles}) {
                         <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete="off" />
                     </div>
                     <div className='mb-4'>
-                        <label className='text-gray-700 text-sm'>Choose Roles</label>
-                        <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete="off" />
+                        <ListBox 
+                            label={'Choose Roles'}
+                            data={roles}
+                            selected={data.selectedRoles}
+                            setSelected={setSelectedRoles}
+                            errors={errors.selectedRoles}/>
                     </div>
                     <Button
                         type={'submit'}

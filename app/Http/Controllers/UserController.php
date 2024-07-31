@@ -21,9 +21,9 @@ class UserController extends Controller
         $sortFields = request('sort_field', 'created_at');
         $sortDirection = request('sort_direction', 'desc');
 
-        if(request('name')) {
-            $query->where('name','like','%'.request('name').'%')
-                    ->orWhere('email','like','%'.request('name').'%');
+        if(request('search')) {
+            $query->where('name','like','%'.request('search').'%')
+                    ->orWhere('email','like','%'.request('search').'%');
         }
 
         $users = $query->with('roles')
@@ -35,8 +35,8 @@ class UserController extends Controller
 
         return Inertia::render('User/Index', [
             'users' => UserResource::collection($users),
-            'roles' => $roles
-            // 'queryParams' => request()->query() ?: null,
+            'roles' => $roles,
+            'queryParams' => request()->query() ?: null,
         ]);
     }
 
@@ -59,7 +59,7 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        // $user->assignRole($request->selectedRoles);
+        $user->assignRole($request->selectedRoles);
 
         return back()->with('success', 'User created successfully');
     }
@@ -96,7 +96,7 @@ class UserController extends Controller
             'name' => $request->name,
         ]);
 
-        // $user->syncRoles($request->selectedRoles);
+        $user->syncRoles($request->selectedRoles);
 
         return back()->with('success', 'User updated successfully');
     }

@@ -21,13 +21,15 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->isMethod('post')) {
+        $method = $this->method();
+
+        if($method === 'POST'){
             return [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:5',
             ];
-        } elseif ($this->isMethod('put')) {
+        } elseif ($method === 'PUT') {
             return [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $this->user->id,
