@@ -3,6 +3,7 @@ import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import Table from '@/Components/Table';
 import TextInput from '@/Components/TextInput';
+import useSweetAlert from '@/Hooks/useSwal';
 import AppLayout from '@/Layouts/AppLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@headlessui/react';
@@ -10,7 +11,7 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
-export default function index({auth, users}) {
+export default function index({auth, users, roles}) {
 
     const { data, setData, transform, post, errors} = useForm({
         id: '',
@@ -21,6 +22,10 @@ export default function index({auth, users}) {
         isUpdate: false,
         isOpen: false,
     });
+
+    const { delete: destroy } = useForm();
+
+    const { showAlert } = useSweetAlert();
 
     transform((data) => ({
         ...data,
@@ -63,6 +68,32 @@ export default function index({auth, users}) {
             }
         })
     }
+    const deleteUser = async (id) => {
+        try {
+            const result = await showAlert({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it',
+            });
+    
+            if (result && result.isConfirmed) {
+                destroy(route('user.destroy', id));
+
+                await showAlert({
+                    title: 'Deleted!',
+                    text: 'Your file has been deleted.',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error) {
+          console.error('Error showing alert:', error);
+        }
+      };
     
     return (
         <AppLayout>
@@ -116,7 +147,7 @@ export default function index({auth, users}) {
                                                 } >
                                                 <IconPencil color='white' size={20}/>
                                             </Button>
-                                            <Button className={'btn btn-sm btn-error'}>
+                                            <Button className={'btn btn-sm btn-error'} onClick={() => deleteUser(user.id)}>
                                                 <IconTrash color='white' size={20}/>
                                             </Button>   
                                         </div>
@@ -152,6 +183,10 @@ export default function index({auth, users}) {
                     </div>
                     <div className='mb-4'>
                         <label className='text-gray-700 text-sm'>Password</label>
+                        <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete="off" />
+                    </div>
+                    <div className='mb-4'>
+                        <label className='text-gray-700 text-sm'>Choose Roles</label>
                         <TextInput type={'password'} placeholder='Password' className="w-full" value={data.password} onChange={e => setData('password', e.target.value)} errors={errors.password} autoComplete="off" />
                     </div>
                     <Button

@@ -31,8 +31,11 @@ class UserController extends Controller
                     ->paginate(10)
                     ->onEachSide(1);
 
+        $roles = Role::all();
+
         return Inertia::render('User/Index', [
             'users' => UserResource::collection($users),
+            'roles' => $roles
             // 'queryParams' => request()->query() ?: null,
         ]);
     }
@@ -101,8 +104,13 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
         //
+        $user_id = $user->id;
+
+        User::findOrFail($user_id)->delete();
+        
+        return back();
     }
 }
