@@ -37,7 +37,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
                 </Transition>
                 </React.Fragment>
             ) : (
-                <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.href}>
+                <Link className={`menu-item duration-700 ease-in-out text-nowrap ` + (subDetailActive ? 'active' : '')} href={item.href}>
                     {item.icon ? item.icon : <IconCategory size={20} />} 
                 </Link>
             )}
