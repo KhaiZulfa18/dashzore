@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useRef } from 'react';
+import InputError from './InputError';
 
-export default forwardRef(function TextInput({ type = 'text', className = '', isFocused = false, ...props }, ref) {
+export default forwardRef(function TextInput({ type = 'text', className = '', isFocused = false, errors, ...props }, ref) {
     const input = ref ? ref : useRef();
 
     useEffect(() => {
@@ -10,6 +11,7 @@ export default forwardRef(function TextInput({ type = 'text', className = '', is
     }, []);
 
     return (
+        <>
         <input
             {...props}
             type={type}
@@ -19,5 +21,7 @@ export default forwardRef(function TextInput({ type = 'text', className = '', is
             }
             ref={input}
         />
+        {errors && <InputError message={errors} className='mt-2'/>}
+        </>
     );
 });

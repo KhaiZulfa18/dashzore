@@ -28,12 +28,14 @@ class UserRequest extends FormRequest
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:5',
+                'selectedRoles' => 'required|array|min:1'
             ];
         } elseif ($method === 'PUT') {
             return [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $this->user->id,
                 'password' => 'nullable|string|min:5',
+                'selectedRoles' => 'required|array|min:1'
             ];
         }
 

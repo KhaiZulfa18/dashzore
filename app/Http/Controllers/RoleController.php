@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RoleRequest;
+use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
@@ -11,7 +16,28 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        $query = Role::query();
+
+        $sortFields = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
+        if(request('search')) {
+            $query->where('name','like','%'.request('search').'%');
+        }
+
+        $users = $query->with('permissions')
+                    ->orderBy($sortFields, $sortDirection)
+                    ->paginate(10)
+                    ->withQueryString()
+                    ->onEachSide(1);
+
+        $permissions = Permission::all();
+
+        return Inertia::render('Role/Index', [
+            'roles' => RoleResource::collection($users),
+            'permissions' => $permissions,
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
     /**
@@ -25,9 +51,13 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RoleRequest $request)
     {
-        //
+        $role = Role::create(['name' => $request->name]);
+
+        $role->givePermissionTo($request->selectedPermissions);
+
+        return back()->with('success', 'Role created successfully');
     }
 
     /**
@@ -49,16 +79,22 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(RoleRequest $request, Role $role)
     {
-        //
+        $role->update(['name' => $request->name]);
+
+        $role->syncPermissions($request->selectedPermissions);
+
+        return back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
-        //
+        $role->delete();
+
+        return back();
     }
 }
