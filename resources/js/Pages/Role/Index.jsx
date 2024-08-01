@@ -6,7 +6,6 @@ import Table from '@/Components/Table';
 import TextInput from '@/Components/TextInput';
 import useSweetAlert from '@/Hooks/useSwal';
 import AppLayout from '@/Layouts/AppLayout';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button } from '@headlessui/react';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
@@ -16,6 +15,8 @@ export default function index({auth, roles, permissions}) {
 
     const { queryParams } = usePage().props;
     const [search, setSearch] = useState(queryParams?.search ?? '');
+
+    const [showPermissions, setShowPermissions] = useState(false);
 
     const searchData = useCallback(() => {
         const updatedQueryParams = { ...queryParams };
@@ -148,9 +149,15 @@ export default function index({auth, roles, permissions}) {
                                     <Table.Cell>{++index + (roles.meta.current_page-1) * roles.meta.per_page}</Table.Cell>
                                     <Table.Cell>{role.name}</Table.Cell> 
                                     <Table.Cell>
-                                        {role.permissions.map((permission) => (
-                                            <span key={permission.id} className='badge badge-outline badge-primary'>{permission.name}</span>
-                                        ))}
+                                        <div className='flex flex-wrap gap-2'>
+                                            {role.permissions && ( role.permissions.length > 5 && !showPermissions) ? (
+                                                <Button onClick={() => setShowPermissions(!showPermissions)} className={'btn btn-sm btn-primary text-white'}>{`${role.permissions.length} Permissions`}</Button>
+                                            ) : null}
+
+                                            {role.permissions && ( role.permissions.length < 5 || showPermissions ) && role.permissions.map((permission, index) => (
+                                                <span key={permission.id} onClick={() => setShowPermissions(!showPermissions)} className='badge badge-outline badge-primary'>{permission.name}</span>
+                                            ))}
+                                        </div>
                                     </Table.Cell> 
                                     <Table.Cell className='text-center'>
                                         <div className='flex gap-2 justify-end'>
