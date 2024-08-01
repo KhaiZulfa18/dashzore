@@ -3,6 +3,7 @@ import Menu from "@/Utils/Menu"
 import { Link, usePage } from "@inertiajs/react";
 import { IconHome, IconCategory } from "@tabler/icons-react";
 import { Transition } from '@headlessui/react';
+import LinkItemDropdown from '@/Components/LinkItemDropdown';
 
 export default function Sidebar({sidebarOpen = false, isMobile = false}) {
 
@@ -54,38 +55,11 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                                         { (sidebarOpen || sidebarOpenTemp ) && item.title }
                                     </Link>
                                 ) : (
-                                    (sidebarOpen || sidebarOpenTemp ) ? (
-                                        <>
-                                            <span className={`menu-dropdown-toggle duration-700 ease-in-out text-nowrap ${openSubmenus[index] ? 'menu-dropdown-show' : ''}`} onClick={() => toggleSubmenu(index)}>
-                                                {item.icon ? item.icon : <IconCategory size={20} />} 
-                                                { (sidebarOpen || sidebarOpenTemp ) && item.title }
-                                            </span>
-                                            <Transition
-                                                show={openSubmenus[index] ?? false}
-                                                enter="transition ease-out duration-100"
-                                                enterFrom="transform opacity-0 scale-95"
-                                                enterTo="transform opacity-100 scale-100"
-                                                leave="transition ease-in duration-75"
-                                                leaveFrom="transform opacity-100 scale-100"
-                                                leaveTo="transform opacity-0 scale-95"
-                                            >
-                                                <ul className={`menu-dropdown duration-300 ease-in-out ${openSubmenus[index] ? 'menu-dropdown-show' : ''} `}>
-                                                    {item.subdetails.map((child, childIndex) => (
-                                                        <li key={childIndex} className="py-1">
-                                                            <Link className="menu-item" href={child.href}>
-                                                                {child.icon && child.icon } 
-                                                                { (sidebarOpen || sidebarOpenTemp ) && child.title }
-                                                            </Link>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </Transition>
-                                        </>
-                                    ) : (
-                                        <Link className="menu-item duration-700 ease-in-out text-nowrap" href={item.href}>
-                                            {item.icon ? item.icon : <IconCategory size={20} />} 
-                                        </Link>
-                                    )
+                                   <LinkItemDropdown item={item} 
+                                        sidebarOpen={sidebarOpen} 
+                                        sidebarOpenTemp={sidebarOpenTemp} 
+                                        toggleSubmenu={() => toggleSubmenu(index)} 
+                                        isOpenSubMenus={openSubmenus[index]} />
                                 )}
                             </li>
                             ))}
