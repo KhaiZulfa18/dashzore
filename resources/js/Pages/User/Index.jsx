@@ -15,11 +15,9 @@ import { useCallback, useEffect, useState } from 'react';
 export default function index({auth, users, roles}) {
 
     const { queryParams } = usePage().props;
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(queryParams?.search ?? '');
 
-    const handleSearch = (e) => {
-        const value = (e.target.value);
-
+    const searchData = useCallback(() => {
         const updatedQueryParams = { ...queryParams };
 
         if (search) {
@@ -31,43 +29,14 @@ export default function index({auth, users, roles}) {
         router.get(route('user.index'), updatedQueryParams, {
             replace: true,
             preserveState: true,
-        });        
-    }
+        });
+    }, [search, queryParams]);
 
-    const debounce = (funct) => {
-        let timer;
-        return (...args) => {
-            const context = this;
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(() => {
-                timer = null;
-                funct.apply(context, args);
-            }, 500);
-        }
-    }
+    useEffect(() => {
+        const timerId = setTimeout(() => searchData(), 100); 
 
-    const handleSearchDebounce  = (e) => useCallback(debounce(handleSearch(e)),[]);
-
-    // const searchData = useCallback(() => {
-    //     const updatedQueryParams = { ...queryParams };
-
-    //     if (search) {
-    //         updatedQueryParams.search = search;
-    //     } else {
-    //         delete updatedQueryParams.search;
-    //     }
-
-    //     router.get(route('user.index'), updatedQueryParams, {
-    //         replace: true,
-    //         preserveState: true,
-    //     });
-    // }, [search, queryParams]);
-
-    // useEffect(() => {
-    //     const timerId = setTimeout(() => searchData(), 500); // Delay 500 ms
-
-    //     return () => clearTimeout(timerId);
-    // }, [search, searchData]);
+        return () => clearTimeout(timerId);
+    }, [search]);
 
     const { data, setData, transform, post, errors} = useForm({
         id: '',
@@ -168,7 +137,7 @@ export default function index({auth, users, roles}) {
                         <div className='card-actions'>
                             <Button className={'btn btn-sm btn-primary text-white'} onClick={() => setData('isOpen', true)}><IconPlus size={14}/> New User</Button>
                         </div>
-                        <TextInput className={`py-1 rounded-2xl`} placeholder="Search..." onChange={(e) => handleSearchDebounce(e)} />
+                        <TextInput className={`py-1 rounded-2xl`} placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>
                     <Table>
                         <Table.Header className='bg-slate-200'>
@@ -183,7 +152,7 @@ export default function index({auth, users, roles}) {
                         <Table.Body>
                             {users.data.map((user, index) => (
                                 <Table.Row key={index}>
-                                    <Table.Cell>{index + 1}</Table.Cell> 
+                                    <Table.Cell>{++index + (users.meta.current_page-1) * users.meta.per_page}</Table.Cell>
                                     <Table.Cell>{user.name}</Table.Cell> 
                                     <Table.Cell>{user.email}</Table.Cell> 
                                     <Table.Cell>

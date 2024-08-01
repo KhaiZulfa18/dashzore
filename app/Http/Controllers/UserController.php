@@ -29,6 +29,7 @@ class UserController extends Controller
         $users = $query->with('roles')
                     ->orderBy($sortFields, $sortDirection)
                     ->paginate(10)
+                    ->withQueryString()
                     ->onEachSide(1);
 
         $roles = Role::all();
