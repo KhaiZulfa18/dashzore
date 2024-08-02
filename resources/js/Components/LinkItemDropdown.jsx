@@ -3,9 +3,9 @@ import { Link, usePage } from '@inertiajs/react'
 import { clsx } from 'clsx';
 import { Transition } from '@headlessui/react';
 
-export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, isOpenSubMenus = false, toggleSubmenu, getIconComponent, ...props}) {
+export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, isOpenSubMenus = false, toggleSubmenu, getIconComponent, isActive, ...props}) {
 
-    const subDetailActive = item.subdetails ? item.subdetails.some(subdetail => subdetail.active) : false;
+    const subDetailActive = item.children ? item.children.some(child => isActive(child.href)) : false;
 
     return (
         <>
@@ -27,7 +27,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
                     <ul className={`menu-dropdown duration-300 ease-in-out ${( isOpenSubMenus || subDetailActive ) ? 'menu-dropdown-show' : ''} `}>
                         {item.children.map((child, childIndex) => (
                             <li key={childIndex} className="py-1">
-                                <Link className={'menu-item ' + (child.active ? 'active' : '')} href={child.href}>
+                                <Link className={'menu-item ' + (isActive(child.href) ? 'active' : '')} href={child.href}>
                                     {child.icon && getIconComponent(child.icon) } 
                                     { (sidebarOpen || sidebarOpenTemp ) && child.title }
                                 </Link>

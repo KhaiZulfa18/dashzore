@@ -7,11 +7,14 @@ import LinkItemDropdown from '@/Components/LinkItemDropdown';
 
 export default function Sidebar({sidebarOpen = false, isMobile = false}) {
 
-    // define props
-    const { auth } = usePage().props;
-    const menuNavigation = auth.menu;
-    console.log(menuNavigation);
+    const { url, props } = usePage();
+    const menuNavigation = props.auth.menu;
+    
+    // const menuNavigation = menu.map((menu, index) => {
+        
+    // });
 
+    console.log(menuNavigation);
     // get menu from utils
     // const menuNavigation = Menu();
 
@@ -39,6 +42,8 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
         return Component ? <Component size={20} /> : null;
     }
 
+    const isActive = href => url.startsWith(href);
+
     const sideBarClass = `relative rounded-br-xl p-4 bg-base-300 md:block overflow-y-auto shadow h-screen transition-all duration-300 ease-in-out ${(sidebarOpen || sidebarOpenTemp) ? 'w-56' : 'w-24'}`;
     const sideBarMobileClass = `fixed top-0 left-0 z-50 w-56 h-full rounded-br-xl p-3 bg-base-300 overflow-y-auto shadow h-screen transition-all duration-300 ease-in-out ${(sidebarOpen) ?'translate-x-0 opacity-100' : '-translate-x-full'} `;
 
@@ -58,7 +63,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                         {menu.children && menu.children.map((item, index) => (
                             <li key={index}>
                                 {!item.children ? (
-                                    <Link className={'menu-item duration-700 ease-in-out text-nowrap ' + (item.active ? 'active' : '')} href={item.href}>
+                                    <Link className={'menu-item duration-700 ease-in-out text-nowrap ' + (isActive(item.href) ? 'active' : '')} href={item.href}>
                                         {item.icon ? getIconComponent(item.icon) : <IconCategory size={20} />} 
                                         { (sidebarOpen || sidebarOpenTemp ) && item.title }
                                     </Link>
@@ -68,6 +73,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                                         sidebarOpenTemp={sidebarOpenTemp} 
                                         toggleSubmenu={() => toggleSubmenu(index)} 
                                         getIconComponent={getIconComponent}
+                                        isActive={isActive}
                                         isOpenSubMenus={openSubmenus[index]} />
                                 )}
                             </li>
