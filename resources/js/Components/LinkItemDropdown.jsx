@@ -3,7 +3,7 @@ import { Link, usePage } from '@inertiajs/react'
 import { clsx } from 'clsx';
 import { Transition } from '@headlessui/react';
 
-export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, isOpenSubMenus = false, toggleSubmenu, ...props}) {
+export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, isOpenSubMenus = false, toggleSubmenu, getIconComponent, ...props}) {
 
     const subDetailActive = item.subdetails ? item.subdetails.some(subdetail => subdetail.active) : false;
 
@@ -12,7 +12,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
             {(sidebarOpen || sidebarOpenTemp ) ? (
                 <React.Fragment>
                 <span className={`menu-dropdown-toggle duration-700 ease-in-out text-nowrap ${( isOpenSubMenus || subDetailActive ) ? 'menu-dropdown-show' : ''}`} onClick={toggleSubmenu}>
-                    {item.icon ? item.icon : <IconCategory size={20} />} 
+                    {item.icon ? getIconComponent(item.icon) : <IconCategory size={20} />} 
                     { (sidebarOpen || sidebarOpenTemp ) && item.title }
                 </span>
                 <Transition
@@ -25,10 +25,10 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
                     leaveTo="transform opacity-0 scale-95"
                 >
                     <ul className={`menu-dropdown duration-300 ease-in-out ${( isOpenSubMenus || subDetailActive ) ? 'menu-dropdown-show' : ''} `}>
-                        {item.subdetails.map((child, childIndex) => (
+                        {item.children.map((child, childIndex) => (
                             <li key={childIndex} className="py-1">
                                 <Link className={'menu-item ' + (child.active ? 'active' : '')} href={child.href}>
-                                    {child.icon && child.icon } 
+                                    {child.icon && getIconComponent(child.icon) } 
                                     { (sidebarOpen || sidebarOpenTemp ) && child.title }
                                 </Link>
                             </li>
@@ -38,7 +38,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
                 </React.Fragment>
             ) : (
                 <Link className={`menu-item duration-700 ease-in-out text-nowrap ` + (subDetailActive ? 'active' : '')} href={item.href}>
-                    {item.icon ? item.icon : <IconCategory size={20} />} 
+                    {item.icon ? getIconComponent(item.icon) : <IconCategory size={20} />} 
                 </Link>
             )}
         </>

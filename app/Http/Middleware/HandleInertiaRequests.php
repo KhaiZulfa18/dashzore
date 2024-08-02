@@ -35,6 +35,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'permissions' => $request->user() ? $request->user()->getPermissions() : [],
                 'super' => $request->user() ? $request->user()->isSuperAdmin() : false,
+                'menu' => $request->user() ? $request->user()->getMenu() : [],
             ],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
