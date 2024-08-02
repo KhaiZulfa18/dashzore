@@ -65,6 +65,13 @@ class MenuSeeder extends Seeder
                             ],
                         ],
                     ],
+                    [
+                        'title' => 'Menu',
+                        'href' => '/menu',
+                        'icon' => 'IconCategory',
+                        'level' => 1,
+                        'permissions' => ['menu-view'],
+                    ],
                 ],
             ],
         ];

@@ -10,14 +10,6 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
     const { url, props } = usePage();
     const menuNavigation = props.auth.menu;
     
-    // const menuNavigation = menu.map((menu, index) => {
-        
-    // });
-
-    console.log(menuNavigation);
-    // get menu from utils
-    // const menuNavigation = Menu();
-
     const [openSubmenus, setOpenSubmenus] = useState({});
     const [sidebarOpenTemp, setSidebarOpenTemp] = useState(false);
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -34,6 +35,7 @@ Route::middleware(['auth','verified'])->group(function (){
     Route::resource('user',UserController::class);
     Route::resource('role',RoleController::class);
     Route::resource('permission',PermissionController::class);
+    Route::resource('menu',MenuController::class);
 });
 
 require __DIR__.'/auth.php';
