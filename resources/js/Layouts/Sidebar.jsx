@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Menu from "@/Utils/Menu"
 import { Link, usePage } from "@inertiajs/react";
-import * as Icons from "@tabler/icons-react";
 import { Transition } from '@headlessui/react';
 import LinkItemDropdown from '@/Components/LinkItemDropdown';
+import GetIcons from '@/Utils/Icons';
 
 export default function Sidebar({sidebarOpen = false, isMobile = false}) {
 
@@ -28,12 +28,6 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
         setSidebarOpenTemp(false);
     };
 
-    const getIconComponent = (name) => {
-        const Component = Icons[name];
-        
-        return Component ? <Component size={20} /> : null;
-    }
-
     const isActive = href => url.startsWith(href);
 
     const sideBarClass = `relative rounded-br-xl p-4 bg-base-300 md:block overflow-y-auto shadow h-screen transition-all duration-300 ease-in-out ${(sidebarOpen || sidebarOpenTemp) ? 'w-56' : 'w-24'}`;
@@ -56,7 +50,7 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                             <li key={index}>
                                 {!item.children ? (
                                     <Link className={'menu-item duration-700 ease-in-out text-nowrap ' + (isActive(item.href) ? 'active' : '')} href={item.href}>
-                                        {item.icon ? getIconComponent(item.icon) : <IconCategory size={20} />} 
+                                        {item.icon ? <GetIcons name={item.icon} /> : <IconCategory size={20} />} 
                                         { (sidebarOpen || sidebarOpenTemp ) && item.title }
                                     </Link>
                                 ) : (
@@ -64,7 +58,6 @@ export default function Sidebar({sidebarOpen = false, isMobile = false}) {
                                         sidebarOpen={sidebarOpen} 
                                         sidebarOpenTemp={sidebarOpenTemp} 
                                         toggleSubmenu={() => toggleSubmenu(index)} 
-                                        getIconComponent={getIconComponent}
                                         isActive={isActive}
                                         isOpenSubMenus={openSubmenus[index]} />
                                 )}

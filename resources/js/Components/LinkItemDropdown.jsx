@@ -2,8 +2,9 @@ import React, { Fragment, useState } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import { clsx } from 'clsx';
 import { Transition } from '@headlessui/react';
+import GetIcons from '@/Utils/Icons';
 
-export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, isOpenSubMenus = false, toggleSubmenu, getIconComponent, isActive, ...props}) {
+export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, isOpenSubMenus = false, toggleSubmenu, isActive, ...props}) {
 
     const subDetailActive = item.children ? item.children.some(child => isActive(child.href)) : false;
 
@@ -12,7 +13,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
             {(sidebarOpen || sidebarOpenTemp ) ? (
                 <React.Fragment>
                 <span className={`menu-dropdown-toggle duration-700 ease-in-out text-nowrap ${( isOpenSubMenus || subDetailActive ) ? 'menu-dropdown-show' : ''}`} onClick={toggleSubmenu}>
-                    {item.icon ? getIconComponent(item.icon) : <IconCategory size={20} />} 
+                    {item.icon ? <GetIcons name={item.icon} /> : <IconCategory size={20} />} 
                     { (sidebarOpen || sidebarOpenTemp ) && item.title }
                 </span>
                 <Transition
@@ -28,7 +29,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
                         {item.children.map((child, childIndex) => (
                             <li key={childIndex} className="py-1">
                                 <Link className={'menu-item ' + (isActive(child.href) ? 'active' : '')} href={child.href}>
-                                    {child.icon && getIconComponent(child.icon) } 
+                                    {child.icon && <GetIcons name={child.icon} /> } 
                                     { (sidebarOpen || sidebarOpenTemp ) && child.title }
                                 </Link>
                             </li>
@@ -38,7 +39,7 @@ export default function LinkItemDropdown({item, sidebarOpen, sidebarOpenTemp, is
                 </React.Fragment>
             ) : (
                 <Link className={`menu-item duration-700 ease-in-out text-nowrap ` + (subDetailActive ? 'active' : '')} href={item.href}>
-                    {item.icon ? getIconComponent(item.icon) : <IconCategory size={20} />} 
+                    {item.icon ? <GetIcons name={item.icon} /> : <IconCategory size={20} />} 
                 </Link>
             )}
         </>
