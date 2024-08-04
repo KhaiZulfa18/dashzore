@@ -5,7 +5,7 @@ import TextInput from "@/Components/TextInput";
 import AppLayout from "@/Layouts/AppLayout";
 import GetIcons from "@/Utils/Icons";
 import { Button } from "@headlessui/react";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export default function index({menus, queryParams}) {
                 <Card.Body>
                     <div className="flex justify-between mb-2">
                         <div className='card-actions'>
-                            <Button className={'btn btn-sm btn-primary text-white'} ><IconPlus size={14}/> New Menu</Button>
+                            <Link href={route('menu.create')} className={'btn btn-sm btn-primary text-white'} ><IconPlus size={14}/> New Menu</Link>
                         </div>
                         <TextInput className={`py-1 rounded-2xl`} placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                     </div>

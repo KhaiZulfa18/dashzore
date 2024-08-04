@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\MenuResource;
+use App\Http\Resources\PermissionResource;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Permission;
 
 class MenuController extends Controller
 {
@@ -40,7 +42,16 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        $menus = Menu::whereLevel(0)->orWhere(function($query) {
+                        $query->whereLevel(1)->whereNull('url');
+                    })->get();
+
+        $permissions = Permission::whereLike('name', '%view%')->get();
+
+        return Inertia::render('Menu/Create',[
+            'menus' => MenuResource::collection($menus),
+            'permissions' => PermissionResource::collection($permissions),
+        ]);
     }
 
     /**
