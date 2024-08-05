@@ -74,7 +74,7 @@ const customClassNames = {
     noOptionsMessage: () => noOptionsMessageStyles,
 };
   
-const SelectSearch = ({ options, placeholder, onChange, creatable = false, ...props}) => {
+const SelectSearch = ({ options, placeholder, onChange, creatable = false, value, ...props}) => {
 
     const Component = creatable ? Creatable : Select;
 

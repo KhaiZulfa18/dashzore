@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('super-admin');
 
         User::factory(20)->create();
+
+        $this->call(MenuSeeder::class);
     }
 }

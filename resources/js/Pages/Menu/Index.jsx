@@ -2,16 +2,46 @@ import Card from "@/Components/Card";
 import Pagination from "@/Components/Pagination";
 import Table from "@/Components/Table";
 import TextInput from "@/Components/TextInput";
+import useSweetAlert from "@/Hooks/useSwal";
 import AppLayout from "@/Layouts/AppLayout";
 import GetIcons from "@/Utils/Icons";
 import { Button } from "@headlessui/react";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 
 export default function index({menus, queryParams}) {
 
     const [search, setSearch] = useState(queryParams?.search ?? '');
+
+    const { delete: destroy } = useForm();
+    const { showAlert } = useSweetAlert();
+    const deleteMenu = async (id) => {
+        try {
+            const result = await showAlert({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it',
+            });
+    
+            if (result && result.isConfirmed) {
+                destroy(route('menu.destroy', id));
+
+                await showAlert({
+                    title: 'Deleted!',
+                    text: 'Your file has been deleted.',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error) {
+          console.error('Error showing alert:', error);
+        }
+    };
 
     return (
         <AppLayout>
@@ -59,7 +89,7 @@ export default function index({menus, queryParams}) {
                                     </Table.Cell>
                                     <Table.Cell>
                                         {menu.permissions.length > 0 && menu.permissions.map((permission, index) => (
-                                            <span key={permission.id} className='badge badge-outline badge-primary'>{permission.name}</span>
+                                            <span key={permission.id} className='badge badge-outline badge-primary whitespace-nowrap overflow-hidden text-ellipsis'>{permission.name}</span>
                                         ))}
                                     </Table.Cell>
                                     <Table.Cell>
@@ -68,9 +98,11 @@ export default function index({menus, queryParams}) {
                                                 >
                                                 <IconPencil color='white' size={20}/>
                                             </Button>
-                                            <Button className={'btn btn-sm btn-error'} >
+                                            {menu.status == 0 && 
+                                            <Button className={'btn btn-sm btn-error'} onClick={() => deleteMenu(menu.id)}>
                                                 <IconTrash color='white' size={20}/>
-                                            </Button>   
+                                            </Button>
+                                            }
                                         </div>
                                     </Table.Cell>
                                 </Table.Row>

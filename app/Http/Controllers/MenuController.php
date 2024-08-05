@@ -122,8 +122,14 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Menu $menu)
     {
-        //
+        $children = $menu->children();
+        if($children->count() > 0) {
+            return back()->with('error', 'Cannot delete menu with children');
+        }
+
+        $menu->delete();
+        return back()->with('success', 'Menu deleted successfully');
     }
 }

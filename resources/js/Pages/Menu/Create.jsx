@@ -43,6 +43,7 @@ export default function create({menus, permissions}) {
             filteredParentOptions = menus.data.filter(menu => menu.level == 1).map(menu => ({value: menu.id, label: menu.title}));
 
         setParentOptions(filteredParentOptions);
+        setData('parentId','');
     }, [data.level]);
 
     const onSubmit = async (e) => {
@@ -65,11 +66,11 @@ export default function create({menus, permissions}) {
                     <div className="flex flex-wrap -mx-2 mb-4">
                         <div className="w-full lg:w-1/2 px-2 mb-4 lg:mb-3">
                             <label className="text-sm">Level</label>
-                            <SelectSearch options={levelOptions} onChange={e => setData('level', e.value)} placeholder={'Choose Level'}/>
+                            <SelectSearch options={levelOptions} onChange={e => setData('level', e.value)} placeholder={'Choose Level'} value={data.level}/>
                         </div>
                         <div className="w-full lg:w-1/2 px-2 mb-4 lg:mb-3">
                             <label className="text-sm">Parent</label>
-                            <SelectSearch options={parentOptions} onChange={e => setData('parentId', e.value)} placeholder={'Choose Parent'}/>
+                            <SelectSearch options={parentOptions} onChange={e => setData('parentId', e.value)} placeholder={'Choose Parent'} value={data.parentId}/>
                         </div>
                         <div className="w-full lg:w-1/2 px-2 mb-4 lg:mb-3">
                             <label className="text-sm">Title</label>
