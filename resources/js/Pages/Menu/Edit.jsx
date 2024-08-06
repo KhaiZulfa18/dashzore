@@ -8,18 +8,19 @@ import { Head, Link, router, useForm } from "@inertiajs/react";
 import { IconArrowBack, IconBackpack, IconCategory, IconDeviceFloppy } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-export default function create({menus, permissions}) {
+export default function edit({menu, menus, permissions}) {
 
     const [parentOptions, setParentOptions] = useState([]);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
-        level: '',
-        parentId: '',
-        title: '',
-        url: '',
-        icon: '',
-        status: '',
-        permissions: [],
+    const { data, setData, post, processing, errors, transform, reset } = useForm({
+        id: menu.data.id,
+        level: menu.data.level,
+        parentId: menu.data.parent_id || '',
+        title: menu.data.title || '',
+        url: menu.data.url || '',
+        icon: menu.data.icon || '',
+        status: menu.data.status || '',
+        permissions: menu.data.permissions.map(permission => permission.id),
     });
 
     const levelOptions = [
@@ -43,23 +44,27 @@ export default function create({menus, permissions}) {
             filteredParentOptions = menus.data.filter(menu => menu.level == 1).map(menu => ({value: menu.id, label: menu.title}));
 
         setParentOptions(filteredParentOptions);
-        setData('parentId','');
     }, [data.level]);
+
+    transform((data) => ({
+        ...data,
+        _method : 'put'
+    }))
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        post(route('menu.store'));
+        post(route('menu.update', data.id));
     };
 
 
     return (
         <AppLayout>
-            <Head title="Create Menu"/>
+            <Head title="Edit Menu"/>
 
             <Card className='bg-gray-50 pb-6'>
                 <Card.Header>
-                    <h2 className="card-title text-2xl font-bold">Create Menu</h2>
+                    <h2 className="card-title text-2xl font-bold">Edit Menu</h2>
                 </Card.Header>
                 <Card.Body>
                     <form onSubmit={onSubmit} >
@@ -74,16 +79,16 @@ export default function create({menus, permissions}) {
                         </div>
                         <div className="w-full lg:w-1/2 px-2 mb-4 lg:mb-3">
                             <label className="text-sm">Title</label>
-                            <TextInput className={`w-full`} placeholder="Title" onChange={(e) => setData('title', e.target.value)} errors={errors.title}/>
+                            <TextInput className={`w-full`} placeholder="Title" onChange={(e) => setData('title', e.target.value)} errors={errors.title} value={data.title}/>
                         </div>
                         <div className="w-full lg:w-1/2 px-2 mb-4 lg:mb-3">
                             <label className="text-sm">URL</label>
-                            <TextInput className={`w-full`} placeholder="URL start with '/'" onChange={(e) => setData('url', e.target.value)} errors={errors.url}/>
+                            <TextInput className={`w-full`} placeholder="URL start with '/'" onChange={(e) => setData('url', e.target.value)} errors={errors.url} value={data.url}/>
                         </div>
                         <div className="w-full lg:w-1/2 px-2 mb-4 lg:mb-3">
                             <label className="text-sm">Icon</label>
                             <div className="join w-full">
-                                <TextInput className={`join-item w-3/4`} placeholder="Icon Name" onChange={(e) => setData('icon', e.target.value)} errors={errors.icon}/>
+                                <TextInput className={`join-item w-3/4`} placeholder="Icon Name" onChange={(e) => setData('icon', e.target.value)} errors={errors.icon} value={data.icon}/>
                                 <div className={`join-item w-1/4 bg-gray-100 border border-gray-300 shadow-sm text-gray-700 flex items-center justify-center `} >
                                     <GetIcons name={data.icon} size={20} />
                                 </div>
@@ -114,7 +119,7 @@ export default function create({menus, permissions}) {
                         </Link>
                         <Button type="submit" disabled={processing} className={'btn btn-primary btn-sm text-white'}>
                             <IconDeviceFloppy size={20}/>
-                            Save
+                            Save Changes
                         </Button>
                     </div>
                     </form>

@@ -94,10 +94,10 @@ export default function index({menus, queryParams}) {
                                     </Table.Cell>
                                     <Table.Cell>
                                         <div className='flex gap-2 justify-end'>
-                                            <Button className={'btn btn-sm btn-accent'} 
+                                            <Link href={route('menu.edit', menu.id)} className={'btn btn-sm btn-accent'} 
                                                 >
                                                 <IconPencil color='white' size={20}/>
-                                            </Button>
+                                            </Link>
                                             {menu.status == 0 && 
                                             <Button className={'btn btn-sm btn-error'} onClick={() => deleteMenu(menu.id)}>
                                                 <IconTrash color='white' size={20}/>

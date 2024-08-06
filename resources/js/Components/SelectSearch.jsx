@@ -74,10 +74,14 @@ const customClassNames = {
     noOptionsMessage: () => noOptionsMessageStyles,
 };
   
-const SelectSearch = ({ options, placeholder, onChange, creatable = false, value, ...props}) => {
+const SelectSearch = ({ options, placeholder, onChange, creatable = false, value = null, ...props}) => {
 
     const Component = creatable ? Creatable : Select;
 
+    const selectedValue = props.isMulti
+        ? options.filter(option => value && value.includes(option.value))
+        : options.find(option => option.value === value);
+        
     return (
         <Component
             options={options}
@@ -86,6 +90,7 @@ const SelectSearch = ({ options, placeholder, onChange, creatable = false, value
             unstyled
             styles={customStyles}
             classNames={customClassNames}
+            value={selectedValue}
             {...props}
         />
     );

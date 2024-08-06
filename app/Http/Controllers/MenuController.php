@@ -106,17 +106,58 @@ class MenuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Menu $menu)
     {
-        //
+        $menus = Menu::whereLevel(0)->orWhere(function($query) {
+            $query->whereLevel(1)->whereNull('url');
+        })->get();
+
+        $permissions = Permission::whereLike('name', '%view%')->get();
+
+        return Inertia::render('Menu/Edit',[
+            'menu' => new MenuResource($menu),
+            'menus' => MenuResource::collection($menus),
+            'permissions' => PermissionResource::collection($permissions),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(MenuRequest $request, string $id)
     {
-        //
+        $menu = Menu::findOrFail($id);
+
+        $level = $request->level;
+        $permissions = $request->permissions;
+
+        if ($level !== 0) {
+            $parent_id = $request->parentId;
+
+            $parent = Menu::find($parent_id);
+
+            if ($level == 2) {
+                $top_parent_id = $parent->parent_id;
+                $top_parent = Menu::find($top_parent_id);
+                $top_parent->permissions()->syncWithoutDetaching($permissions);
+            }
+
+            $parent->permissions()->syncWithoutDetaching($permissions);
+        }
+
+        $menu->update([
+            'title' => $request->title,
+            'parent_id' => $request->parentId,
+            'level' => $request->level,
+            'url' => $request->url,
+            'icon' => $request->icon,
+            'status' => $request->status,
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        $menu->permissions()->sync($permissions);
+
+        return to_route('menu.index')->with('success', 'Menu updated successfully');
     }
 
     /**
