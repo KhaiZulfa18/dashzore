@@ -6,13 +6,44 @@ import useSweetAlert from "@/Hooks/useSwal";
 import AppLayout from "@/Layouts/AppLayout";
 import GetIcons from "@/Utils/Icons";
 import { Button } from "@headlessui/react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/react";
 import { IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export default function index({menus, queryParams}) {
+export default function index({menus}) {
 
+    const { queryParams } = usePage().props;
     const [search, setSearch] = useState(queryParams?.search ?? '');
+    const isInitialRender = useRef(true);
+
+    console.log(menus);
+
+    const searchData = useCallback(() => {
+        const updatedQueryParams = { ...queryParams };
+
+        if (search) {
+            updatedQueryParams.search = search;
+        } else {
+            delete updatedQueryParams.search;
+        }
+
+        router.get(route('menu.index'), updatedQueryParams, {
+            replace: true,
+            preserveState: true,
+        });
+    }, [search, queryParams]);
+
+    useEffect(() => {
+        
+        if (isInitialRender.current) {
+            isInitialRender.current = false;
+            return;
+        }
+
+        const timerId = setTimeout(() => searchData(), 100); 
+
+        return () => clearTimeout(timerId);
+    }, [search]);
 
     const { delete: destroy } = useForm();
     const { showAlert } = useSweetAlert();
