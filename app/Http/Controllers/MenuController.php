@@ -6,13 +6,24 @@ use App\Http\Requests\MenuRequest;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PermissionResource;
 use App\Models\Menu;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 
-class MenuController extends Controller
+class MenuController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array 
+    {
+        return [
+            new Middleware('permission:menu-view|menu-create|menu-update|menu-delete', only: ['index']),
+            new Middleware('permission:menu-create', only: ['create','store']),
+            new Middleware('permission:menu-update', only: ['edit','update']),
+            new Middleware('permission:menu-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

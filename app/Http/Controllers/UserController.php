@@ -5,12 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use App\Models\User;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array 
+    {
+        return [
+            new Middleware('permission:user-view|user-create|user-update|user-delete', only: ['index']),
+            new Middleware('permission:user-create', only: ['store']),
+            new Middleware('permission:user-update', only: ['update']),
+            new Middleware('permission:user-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -71,10 +82,6 @@ class UserController extends Controller
     public function show(User $user)
     {
         //
-
-        $getMenu = $user->getMenu();
-
-        return $getMenu;
     }
 
     /**
