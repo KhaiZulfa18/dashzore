@@ -25,6 +25,8 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
+            <div className="mb-4 font-mono text-xl text-slate-700">Register</div>
+
             <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
